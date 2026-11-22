@@ -1,0 +1,51 @@
+{
+  "vertices": [
+    "S",
+    "P",
+    "R"
+  ],
+  "arestas": [
+    {
+      "origem": "S",
+      "destino": "S",
+      "tipo": "+",
+      "rate": "r_S",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "S",
+      "destino": "P",
+      "tipo": "-+",
+      "rate": "k_diff",
+      "pos": [
+        "R"
+      ],
+      "neg": []
+    },
+    {
+      "origem": "P",
+      "destino": "R",
+      "tipo": "-",
+      "rate": "k_inh",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "R",
+      "destino": "R",
+      "tipo": "+",
+      "rate": "r_R",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "P",
+      "destino": "P",
+      "tipo": "-",
+      "rate": "d_P",
+      "pos": [],
+      "neg": []
+    }
+  ]
+}
