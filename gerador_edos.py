@@ -10,7 +10,7 @@ class Termo:
     rate: str
     fatores: list[str] = field(default_factory=list)
     pos: list[str] = field(default_factory=list)
-    neg: dict[str][str] = field(default_factory=dict)    # nome do inibidor -> constante de força de inibição
+    neg: dict[str, str] = field(default_factory=dict)    # nome do inibidor -> constante de força de inibição
 
 @dataclass
 class Equacao:
@@ -24,3 +24,43 @@ class SistemaEDO:
     condicoes_iniciais: dict[str, float]                # valores iniciais de cada variável
     equacoes: list[Equacao] = field(default_factory=list)
 
+def _neg_para_dict(aresta: Aresta) -> dict[str, str]:
+    return {n: "K_" + n for n in aresta.neg}
+
+def _gera_termo(aresta: Aresta) -> list[tuple[str, Termo]]:
+    o, d = aresta.origem, aresta.destino
+    pos = aresta.pos
+    neg = _neg_para_dict(aresta)
+
+    if o == d:
+        if aresta.tipo == "+":
+            return [(o, Termo(1, aresta.rate, [o], pos, neg))]
+        if aresta.tipo == "-":
+            return [(o, Termo(-1, aresta.rate, [o], pos, neg))]
+        raise ValueError(f"laço com tipo inválido: {aresta.texto()}")
+    match aresta.tipo:
+        case "+":
+            return [(d, Termo(1, aresta.rate, [o], pos, neg))]
+        case "-":
+            return [(d, Termo(-1, aresta.rate, [o,d], pos, neg))]
+        case "-+":
+            return [
+                (o, Termo(-1, aresta.rate, [o], list(pos), dict(neg))),
+                (d, Termo(1, aresta.rate, [o], list(pos), dict(neg))),
+            ]
+        case _:
+            raise ValueError(f"tipo inválido: {aresta.texto()}")
+
+def gera_sistema(grafo: Grafo, parametros: dict[str, float], condicoes_iniciais: dict[str, float]) -> SistemaEDO:
+    equacoes = {v: Equacao(v) for v in grafo.vertices}
+
+    for aresta in grafo.arestas:
+        for variavel, termo in _gera_termo(aresta):
+            equacoes[variavel].termos.append(termo)
+
+    return SistemaEDO(
+        variaveis=list(grafo.vertices),
+        parametros=dict(parametros or {}),
+        condicoes_iniciais=dict(condicoes_iniciais or {}),
+        equacoes=[equacoes[v] for v in grafo.vertices],
+    )
