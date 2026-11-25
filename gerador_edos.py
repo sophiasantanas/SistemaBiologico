@@ -87,3 +87,35 @@ def equacao_para_texto(eq: Equacao) -> str:
 
 def para_texto(sistema: SistemaEDO) -> str:
     return "\n".join(equacao_para_texto(eq) for eq in sistema.equacoes)
+
+
+def parametros_usados(sistema: SistemaEDO) -> list[str]:
+    """Nomes de rates/constantes na ordem em que aparecem nas equações."""
+    nomes = []
+    for eq in sistema.equacoes:
+        for t in eq.termos:
+            for n in [t.rate] + list(t.neg.values()):
+                if n not in nomes:
+                    nomes.append(n)
+    return nomes
+
+
+def validar(sistema: SistemaEDO) -> None:
+    """Validação se os valores de todas as constantes foram informadas para resolver o sistema de EDOs"""
+    vars_ = set(sistema.variaveis)
+    erros = []
+    for eq in sistema.equacoes:
+        for t in eq.termos:
+            for v in list(t.fatores) + list(t.pos) + list(t.neg):
+                if v not in vars_:
+                    erros.append(f"variável desconhecida '{v}' em dX/dt de {eq.variavel}")
+    for n in parametros_usados(sistema):
+        if n not in sistema.parametros:
+            erros.append(f"parâmetro sem valor: '{n}'")
+        if n in vars_:
+            erros.append(f"parâmetro '{n}' tem o mesmo nome de uma variável")
+    for v in sistema.variaveis:
+        if v not in sistema.condicoes_iniciais:
+            erros.append(f"condição inicial faltando: '{v}'")
+    if erros:
+        raise ValueError("Sistema inválido:\n  - " + "\n  - ".join(erros))
