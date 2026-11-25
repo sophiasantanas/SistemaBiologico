@@ -1,0 +1,76 @@
+{
+  "vertices": [
+    "V",
+    "I",
+    "T",
+    "C"
+  ],
+  "arestas": [
+    {
+      "origem": "V",
+      "destino": "I",
+      "tipo": "+",
+      "rate": "beta",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "I",
+      "destino": "V",
+      "tipo": "+",
+      "rate": "p_V",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "I",
+      "destino": "C",
+      "tipo": "+",
+      "rate": "k_C",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "C",
+      "destino": "T",
+      "tipo": "+",
+      "rate": "k_T",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "T",
+      "destino": "I",
+      "tipo": "-",
+      "rate": "k_kill",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "T",
+      "destino": "T",
+      "tipo": "+",
+      "rate": "r_T",
+      "pos": [
+        "C"
+      ],
+      "neg": []
+    },
+    {
+      "origem": "V",
+      "destino": "V",
+      "tipo": "-",
+      "rate": "c_V",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "T",
+      "destino": "T",
+      "tipo": "-",
+      "rate": "d_T",
+      "pos": [],
+      "neg": []
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "vertices": [
+    "A",
+    "B"
+  ],
+  "arestas": [
+    {
+      "origem": "A",
+      "destino": "A",
+      "tipo": "+",
+      "rate": "r_A",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "A",
+      "destino": "B",
+      "tipo": "+",
+      "rate": "k1",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "B",
+      "destino": "A",
+      "tipo": "-",
+      "rate": "k2",
+      "pos": [],
+      "neg": []
+    },
+    {
+      "origem": "B",
+      "destino": "B",
+      "tipo": "-",
+      "rate": "d_B",
+      "pos": [],
+      "neg": []
+    }
+  ]
+}
