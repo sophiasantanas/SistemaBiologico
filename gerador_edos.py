@@ -64,3 +64,26 @@ def gera_sistema(grafo: Grafo, parametros: dict[str, float], condicoes_iniciais:
         condicoes_iniciais=dict(condicoes_iniciais or {}),
         equacoes=[equacoes[v] for v in grafo.vertices],
     )
+
+def _corpo(t: Termo) -> str:
+    """rate*F1*F2*Pos... / (1 + K*n) ..."""
+    texto = "*".join([t.rate] + list(t.fatores) + list(t.pos))
+    for nome, k in t.neg.items():
+        texto += f"/(1 + {k}*{nome})"
+    return texto
+
+def equacao_para_texto(eq: Equacao) -> str:
+    if not eq.termos:
+        return f"d{eq.variavel}/dt = 0"
+    partes = []
+    for i, t in enumerate(eq.termos):
+        corpo = _corpo(t)
+        if i == 0:
+            partes.append(("-" if t.sinal < 0 else "") + corpo)
+        else:
+            partes.append(("- " if t.sinal < 0 else "+ ") + corpo)
+    return f"d{eq.variavel}/dt = " + " ".join(partes)
+
+
+def para_texto(sistema: SistemaEDO) -> str:
+    return "\n".join(equacao_para_texto(eq) for eq in sistema.equacoes)
